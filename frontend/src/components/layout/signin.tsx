@@ -1,4 +1,3 @@
-// src/components/Signupin.tsx
 import React, { useState } from 'react';
 import {
   Box,
@@ -7,9 +6,11 @@ import {
   TextField,
   Typography,
   Paper,
+  Link,
 } from '@mui/material';
 
-const Signupin: React.FC = () => {
+
+const Signin: React.FC = () => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -43,23 +44,11 @@ const Signupin: React.FC = () => {
       }}
     >
       <Container maxWidth="xs">
-        <Paper elevation={6} sx={{ padding: 4, backgroundColor: '#1c1c1c', color: '#fff' }}>
+        <Paper elevation={6} sx={{ padding: 4, backgroundColor: '#f5efef', color: '#962020' }}>
           <Typography variant="h4" gutterBottom align="center">
-            Sign Up
+            Sign In
           </Typography>
           <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              variant="outlined"
-              required
-              InputLabelProps={{ style: { color: '#ccc' } }}
-              InputProps={{ style: { color: '#fff' } }}
-            />
             <TextField
               fullWidth
               margin="normal"
@@ -70,8 +59,6 @@ const Signupin: React.FC = () => {
               onChange={handleChange}
               variant="outlined"
               required
-              InputLabelProps={{ style: { color: '#ccc' } }}
-              InputProps={{ style: { color: '#fff' } }}
             />
             <TextField
               fullWidth
@@ -83,30 +70,20 @@ const Signupin: React.FC = () => {
               onChange={handleChange}
               variant="outlined"
               required
-              InputLabelProps={{ style: { color: '#ccc' } }}
-              InputProps={{ style: { color: '#fff' } }}
             />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Confirm Password"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              variant="outlined"
-              required
-              InputLabelProps={{ style: { color: '#ccc' } }}
-              InputProps={{ style: { color: '#fff' } }}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, backgroundColor: '#2e69ff' }}
-            >
-              Sign Up
-            </Button>
+            <Link href="/home">
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, backgroundColor: '#2e69ff' }}
+                disabled={!formData.email || formData.password.length < 8}>
+                Sign In
+              </Button>  
+            </Link>
+            <Typography align="center" padding={3} > Don't have an account? <Link href="/signup"> 
+                Sign Up
+              </Link></Typography>
           </form>
         </Paper>
       </Container>
@@ -114,4 +91,4 @@ const Signupin: React.FC = () => {
   );
 };
 
-export default Signupin;
+export default Signin;
