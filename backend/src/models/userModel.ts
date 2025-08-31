@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { compareValue, hashValue } from "../utils/bcrypt";
-import { de } from "zod/v4/locales/index.cjs";
 
 
 export interface UserDocument extends mongoose.Document {
@@ -14,7 +13,7 @@ export interface UserDocument extends mongoose.Document {
 
 const userSchema = new mongoose.Schema<UserDocument>({
   email: {type: String, required: true, unique: true},
-  password: {type: String, required: true, unique: true},
+  password: {type: String, required: true},
   // verified: {type: Boolean, required: true, default: false},
 },
 {

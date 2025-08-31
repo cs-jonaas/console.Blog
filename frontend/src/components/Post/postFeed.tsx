@@ -73,10 +73,20 @@ const PostFeed = () => {
   const fetchPosts = useCallback(async (pageNum: number) => {
     setLoading(true);
     
+    // const response = await fetch('/api/posts', {
+    //   credentials: 'include', // <- This sends the JWT cookies automatically
+    // });
+    
+    // if (response.status === 401) {
+    //   // Token is invalid/expired - redirect to login
+    //   navigate('/login');
+    //   return;
+    // }
+
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // In a real app, you would fetch from your API here
+    // fetch  API here
     const newPosts = [...mockPosts].map(post => ({
       ...post,
       id: post.id + (pageNum - 1) * mockPosts.length

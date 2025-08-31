@@ -8,6 +8,9 @@ import cookieParser from 'cookie-parser';
 import errorHandler from './middleware/errorHandler';
 import { OK } from './constants/http';
 import authRoutes from './routes/authRoute';
+import postRoutes from './routes/postRoute';
+import requireAuth, { AuthenticatedRequest } from './middleware/requireAuth';
+import UserModel from './models/userModel';
 
 const app = express();
 
@@ -28,7 +31,14 @@ app.get('/',
       });
   });
 
+  app.get('/api/auth/me', requireAuth, async (req: AuthenticatedRequest, res) => {
+  // requireAuth already set req.userId
+  const user = await UserModel.findById(req.userId).select('email');
+  res.json(user);
+});
+
 app.use("/auth", authRoutes);
+app.use("/posts", postRoutes);
 
 app.use(errorHandler);
 

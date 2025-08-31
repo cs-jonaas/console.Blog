@@ -13,13 +13,24 @@ import { Route, Routes } from 'react-router-dom';
 const App: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      {/* Protected pages */}
+
+    <Route path="/" element={<LandingPage />} />
+        <Route path="/home" element={<HomePage />} />
+    
+      <Route path="/create" element={<PostCreate />} />
+
+      {/* Non-Proected Pages */}
+      {/* <Route path="/" element={<LandingPage />} /> */}
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/signin" element={<SigninPage />} />
-      <Route path="/home" element={<HomePage />} />
-      <Route path="/create" element={<PostCreate />} />
     </Routes>
   )
 }
 
 export default App;
+
+
+{/* <Route path="/" element={<AppContainer />}>
+        <Route index element={<HomePage />} />
+      </Route> */}

@@ -12,8 +12,11 @@ export const loginSchema = z.object({
   })
 
 
-export const registerSchema = loginSchema.extend({
+export const registerSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
   confirmPassword: z.string().min(8).max(255),
+  userAgent: z.string().optional(),
   
 }).refine(      //Verify that password and confirmPassword match
   (data) => data.password === data.confirmPassword, {

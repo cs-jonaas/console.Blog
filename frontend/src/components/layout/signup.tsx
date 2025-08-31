@@ -7,6 +7,9 @@ import {
   Typography,
   Paper,
 } from '@mui/material';
+import { signupUser } from '../../services/authServices';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../../utils/auth';
 
 
 const Signup: React.FC = () => {
@@ -16,6 +19,10 @@ const Signup: React.FC = () => {
     password: '',
     confirmPassword: '',
   });
+  
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -24,11 +31,52 @@ const Signup: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle your signup logic here
-    console.log(formData);
-  };
+    setLoading(true);
+    setError(null);
+
+    // Check password match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    // Check password length
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      setLoading(false);
+      return;
+    }
+
+    try {
+    // Call the signup function
+    const result = await signupUser({
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+    });
+
+
+
+      if (result.accessToken) {
+        login(result.accessToken);
+        navigate("/home");
+      } else {
+        setError("Registration Failed");
+      }
+    } catch (error) {
+      // Handle errors
+      
+      setError(error instanceof Error ? error.message : String(error));
+      console.error('Signup error:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   return (
     <Box
@@ -47,11 +95,22 @@ const Signup: React.FC = () => {
           <Typography variant="h4" gutterBottom align="center">
             Sign Up
           </Typography>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Username"
+
+          {/* Display error message */}
+          {error && (
+          <Typography 
+            color="error" 
+            align="center" 
+            sx={{ mb: 2, padding: 1, backgroundColor: '#ffe6e6', borderRadius: 1 }}
+          >
+            {error}
+          </Typography>
+        )}
+        <form onSubmit={handleSubmit}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Username"
               name="username"
               value={formData.username}
               onChange={handleChange}
@@ -96,7 +155,7 @@ const Signup: React.FC = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, backgroundColor: '#2e69ff' }}
-              disabled={!formData.email || formData.password.length < 8}>
+              disabled={!formData.email || formData.password.length < 8 || loading}>
               Sign Up
             </Button>
           </form>

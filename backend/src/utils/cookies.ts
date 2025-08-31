@@ -1,6 +1,5 @@
 import { CookieOptions, Response } from "express";
 import { fifteenMinutesFromNow, thirtyDaysFromNow } from "./date";
-import { get } from "mongoose";
 
 const secure = process.env.NODE_ENV !== "development";
 
