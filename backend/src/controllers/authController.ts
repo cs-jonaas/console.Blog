@@ -31,7 +31,11 @@ export const registerHandler = catchErrors (async (req, res) => {
    .status(CREATED)
    .json({
     message: "Register successful",
-    // user: { id: user._id, email: user.email },
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    },
     accessToken,
    })
 });
@@ -49,11 +53,16 @@ export const loginHandler = catchErrors(async (req, res) => {
     userAgent: req.headers["user-agent"] ?? "",
   })
 
+  console.log('=== LOGIN SUCCESSFUL ===');
+  console.log('User:', user.username);
+  console.log('Access token generated:', !!accessToken);
+  console.log('Refresh token generated:', !!refreshToken);
+
   return setAuthCookies({ res, accessToken, refreshToken })
     .status(OK)
     .json({
       message: "Login successful",
-      // user: { id: user._id, email: user.email },
+      user: { id: user._id, email: user.email },
       accessToken,
     })
 });
@@ -73,6 +82,6 @@ export const meHandler = catchErrors(async (req, res) => {
   appAssert(user, UNAUTHORIZED, "User not found");
 
   return res.json({
-    user: { id: user._id, email: user.email },
+    user: { id: user._id, username: user.username, email: user.email },
   });
 });

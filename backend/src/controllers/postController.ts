@@ -21,7 +21,9 @@ export const createPostHandler = catchErrors(async (req: AuthenticatedRequest, r
     title: validatedData.title,
     content: validatedData.content,
     author: authorId,
+    ...(validatedData.coverImage !== undefined && { coverImage: validatedData.coverImage }),
     ...(validatedData.tags !== undefined && { tags: validatedData.tags }),
+    ...(validatedData.status !== undefined && { status: validatedData.status }),
   };
 
   const newPost = await createPost(postData);

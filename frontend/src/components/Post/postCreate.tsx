@@ -95,7 +95,7 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim() || !content.trim()) {
       setSnackbar({
         open: true,
@@ -108,6 +108,9 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
     setIsSubmitting(true);
     
     try {
+      console.log('Cover image being sent:', coverImage ? 'YES' : 'NO');
+      console.log('Cover image length:', coverImage?.length);
+      console.log('Cover image preview:', coverImage?.substring(0, 50) + '...');
     // Extract inline images (base64) from markdown
     const inlineImages: { id: string; data: string }[] = [];
     const processedContent = content.replace(
@@ -119,33 +122,38 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
       }
     );
 
+     // Prepare payload - ensure coverImage is properly formatted
     const payload = {
       title,
       tags,
       content: processedContent,
-      coverImage,
+      ...(coverImage && { coverImage }),
       inlineImages
     };
 
+    console.log('Full payload:', JSON.stringify(payload).substring(0, 200) + '...');
+
     // Call backend API
     const API_URL = import.meta.env.VITE_API_URL;
+
     const res = await fetch(`${API_URL}/posts`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
       body: JSON.stringify(payload)
     });
 
     if (!res.ok) throw new Error("Failed to create post");
 
-    const data = await res.json();
-      
       setSnackbar({
         open: true,
         message: 'Post created successfully!',
         severity: 'success'
       });
       
-      router(`/posts/${data.post._id}`);
+      router(`/home`);
 
       // Reset form after creating
       setTitle('');
@@ -160,6 +168,10 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
       setIsSubmitting(false);
     }
   };
+
+  // In your handleSubmit function
+  console.log('Cover image length:', coverImage?.length);
+  console.log('Cover image type:', coverImage?.substring(0, 20));
 
   // const handleCloseSnackbar = () => {
   //   setSnackbar({ ...snackbar, open: false });
@@ -254,7 +266,7 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
             title={title}
             tags={tags}
             content={content}
-            coverImage={coverImage ? undefined : coverImage}
+            coverImage={coverImage}
           />
         ) : (
           <>

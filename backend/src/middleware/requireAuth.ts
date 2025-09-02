@@ -13,9 +13,11 @@ const requireAuth = async (
   res: Response,
   next: NextFunction
 ) => {
+
   try {
     // Get the token from the cookies
     const accessToken = req.cookies.accessToken;
+    
     appAssert(accessToken, UNAUTHORIZED, 'Access token is required');
 
     // Verify the token

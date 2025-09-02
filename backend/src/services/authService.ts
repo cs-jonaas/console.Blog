@@ -1,12 +1,14 @@
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import SessionModel from "../models/sessionModel";
 import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
-import UserModel from "../models/userModel";
+import UserModel, { UserDocument } from "../models/userModel";
 import appAssert from "../utils/appAssert";
 import { CONFLICT, UNAUTHORIZED } from "../constants/http";
 import { refreshTokenSignOptions, signToken } from "../utils/jwt";
 
 type CreateAccountParams = {
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -26,9 +28,10 @@ export const createAccount = async (data: CreateAccountParams) => {
   //create user
   const user = await UserModel.create({
     email: data.email,
+    username: data.username,
     password: data.password,
     confirmPassword: data.confirmPassword,
-  })
+  }) as InstanceType<typeof UserModel>;
 
   const userId =  user._id;
 
@@ -50,9 +53,14 @@ export const createAccount = async (data: CreateAccountParams) => {
     userId: user._id,
   });
 
+  const typedUser = user as UserDocument
   //return user and token
   return {
-    user,
+    user: {
+      id: typedUser._id.toString(),
+      username: typedUser.username,
+      email: typedUser.email,
+    },
     accessToken,
     refreshToken,
   }

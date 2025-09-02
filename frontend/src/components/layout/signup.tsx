@@ -59,10 +59,14 @@ const Signup: React.FC = () => {
       confirmPassword: formData.confirmPassword,
     });
 
+    console.log('Signup result:', result);
 
-
-      if (result.accessToken) {
-        login(result.accessToken);
+      if (result.accessToken || result.user) {
+        login(result.accessToken, {
+          id: result.user.id,
+          username: result.user.username,
+          email: result.user.email,
+        });
         navigate("/home");
       } else {
         setError("Registration Failed");

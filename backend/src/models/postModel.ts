@@ -1,6 +1,11 @@
 
 import mongoose, { Document, Types, Schema } from 'mongoose';
 
+export interface Author {
+  _id: Types.ObjectId;
+  username: string;
+  email: string;
+}
 // describes the properties needed to CREATE a new post
 export interface CreatePostInput {
   title: string;
@@ -23,6 +28,10 @@ export interface PostDocument extends Document {
   updatedAt: Date;
 }
 
+export interface PostDocumentPopulated extends Omit<PostDocument, 'author'> {
+  author: Author;
+}
+
 // describes the properties that a Post response should have
 // example might not want to send the entire author object, but just the ID and username.
 export interface PostResponse {
@@ -31,6 +40,7 @@ export interface PostResponse {
   content: string;
   author: {
     id: string;
+    username: string;
     email: string;
   };
   tags: string[];
@@ -72,6 +82,13 @@ const PostSchema: Schema = new Schema(
     coverImage: {
       type: String,
       required: false,
+      validate: {
+        validator: function(v: string) {
+          // Optional: validate base64 format or set size limits
+          return v === undefined || v.startsWith('data:image/');
+        },
+        message: 'Cover image must be a valid base64 image string'
+      }
     }
   },
   {

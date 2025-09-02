@@ -1,31 +1,45 @@
 
 import { Types } from 'mongoose';
-import PostModel, { PostDocument, CreatePostInput } from '../models/postModel';
+import PostModel, { PostDocument, CreatePostInput, PostDocumentPopulated, Author } from '../models/postModel';
 import appAssert from '../utils/appAssert';
 import { NOT_FOUND, FORBIDDEN } from '../constants/http';
 
 // Create a new post
 export const createPost = async (data: CreatePostInput): Promise<PostDocument> => {
+  // Optional: Validate and process cover image if it's too large
+  if (data.coverImage && data.coverImage.length > 1000000000) { 
+    // You might want to compress or reject very large images
+    throw new Error('Cover image is too large');
+  }
+
+  console.log('Service received data:', {
+    title: data.title,
+    hasCoverImage: !!data.coverImage,
+    coverImageLength: data.coverImage?.length
+  });
+  
+  // In your backend createPost service
+  console.log('Received cover image length:', data.coverImage?.length);
+
   const post = await PostModel.create(data);
   return post;
 };
-
 // Get all posts (with optional filtering later, e.g., by status, author)
-export const getPosts = async (): Promise<PostDocument[]> => {
+export const getPosts = async (): Promise<PostDocumentPopulated[]> => {
   const posts = await PostModel.find()
-    .populate('author', 'email') // Populate the author's email
+    .populate('author', 'username email') // Populate the author's username and email
     .sort({ createdAt: -1 }); // Newest first
-  return posts;
+  return posts as unknown as PostDocumentPopulated[];
 };
 
 // Get a single post by ID
-export const getPostById = async (id: string): Promise<PostDocument | null> => {
+export const getPostById = async (id: string): Promise<PostDocumentPopulated | null> => {
   // Check if the ID is a valid MongoDB ObjectId to avoid casting errors
   if (!Types.ObjectId.isValid(id)) {
     return null;
   }
-  const post = await PostModel.findById(id).populate('author', 'email');
-  return post;
+  const post = await PostModel.findById(id).populate('author', 'username email');
+  return post as unknown as PostDocumentPopulated | null;
 };
 
 // Update a post. The `userId` is used to verify ownership.
@@ -49,7 +63,6 @@ export const updatePost = async (
   // 3. Apply the updates and save
   Object.assign(post, updateData);
   const updatedPost = await post.save();
-
   return updatedPost;
 };
 

@@ -61,7 +61,7 @@ const Signin: React.FC = () => {
     type User = {
       id?: string;
       email?: string;
-      // Add other user fields as needed
+      username?: string;
       [key: string]: unknown;
     };
 
@@ -104,29 +104,7 @@ const Signin: React.FC = () => {
   } finally {
     setLoading(false);
   }
-      //   try {
-      //   // Call the signup function
-      //   const result = await signinUser({
-      //     email: formData.email,
-      //     password: formData.password,
-      //   });
-
-      // if (result.accessToken) {
-      //   login(result.accessToken);
-      //   navigate("/home");
-      // } else {
-      //   setError("Authentication Failed");
-      // }
-
-      //   // Redirect the user to the home page or login page
-        
-      // } catch (error) {
-      //   // Display the error message to the user (e.g., set it to a state variable)
-      //   console.error('Signin failed:', error);
-      //   setError((error as Error).message); // Example error state
-      // } finally {
-      //   setLoading(false);
-      // }
+  
   };
 
   return (

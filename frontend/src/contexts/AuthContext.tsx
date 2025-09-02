@@ -1,58 +1,88 @@
-// import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { getStoredUser, isAuthenticated, logout } from '../utils/auth'; 
+import { AuthContext, type AuthContextType, type User } from '../hooks/useAuth';
 
-// interface AuthContextType {
-//   isLoggedIn: boolean;
-//   user: null | { email: string; id: string };
-//   login: (userData: { email: string; id: string }) => void;
-//   logout: () => void;
-// }
 
-// const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Create a provider component
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-// export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-//   const [isLoggedIn, setIsLoggedIn] = useState(false);
-//   const [user, setUser] = useState<null | { email: string; id: string }>(null);
+const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // Crucial for initial load
 
-//   const login = (userData: { email: string; id: string }) => {
-//     setIsLoggedIn(true);
-//     setUser(userData);
-//   };
+  const handleLogin = (userData?: User) => {
+    setIsLoggedIn(true);
+    if (userData) {
+      setUser(userData);
+    } else {
+      // If no userData is passed, try to get it from storage
+      const storedUser = getStoredUser();
+      if (storedUser) setUser(storedUser);
+    }
+  };
 
-//   const logout = () => {
-//     setIsLoggedIn(false);
-//     setUser(null);
-//     // Logout API endpoint here
-//   };
+  // Function to handle logout (update state)
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUser(null);
+    logout(); // Call your existing logout function to clear storage
+  };
 
-//   // Check on app load if user is already logged in (via existing cookies)
-//   useEffect(() => {
-//     const checkAuthStatus = async () => {
-//       try {
-//         const response = await fetch('/api/auth/me', { 
-//           credentials: 'include' 
-//         });
-//         if (response.ok) {
-//           const userData = await response.json();
-//           login(userData);
-//         }
-//       } catch (error) {
-//         console.log('Not authenticated', error);
-//       }
-//     };
-//     checkAuthStatus();
-//   }, []);
+  // Effect to check auth status ONCE when the app loads
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const authStatus = isAuthenticated();
+      const storedUser = getStoredUser();
 
-//   return (
-//     <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
+    console.log('=== AUTH DEBUG ===');
+    console.log('Auth status:', authStatus);
+    console.log('Stored user:', storedUser);
 
-// export const useAuth = () => {
-//   const context = useContext(AuthContext);
-//   if (context === undefined) {
-//     throw new Error('useAuth must be used within an AuthProvider');
-//   }
-//   return context;
-// };
+    setIsLoggedIn(authStatus);
+      if (authStatus && storedUser) {
+        // Ensure the stored user has the correct shape
+        const userData: User = {
+          _id: storedUser._id || storedUser.id || '',
+          username: storedUser.username || '',
+          email: storedUser.email || ''
+        };
+        setUser(userData);
+      }
+      setIsLoading(false);
+    };
+    // setIsLoggedIn(authStatus);
+    //   if (authStatus && storedUser) {
+    //     setUser(storedUser);
+    //   }
+    //   setIsLoading(false); // Signal that the initial check is done
+    // };
+
+    checkAuthStatus();
+
+    // Optional: Listen for your custom event if login/logout happens in another tab/window
+    const handleStorageChange = () => checkAuthStatus();
+    window.addEventListener('authStateChange', handleStorageChange);
+    return () => window.removeEventListener('authStateChange', handleStorageChange);
+  }, []);
+
+  // The value that will be supplied to any component that uses this context
+  const contextValue: AuthContextType = {
+    isLoggedIn,
+    user,
+    isLoading,
+    login: handleLogin,
+    logout: handleLogout,
+  };
+
+  return (
+    <AuthContext.Provider value={contextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthProvider;

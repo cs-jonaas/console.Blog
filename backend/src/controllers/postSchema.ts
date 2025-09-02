@@ -18,8 +18,17 @@ const postBaseSchema = z.object({
     .enum(['draft', 'published'])
     .optional(),
   coverImage: z
-   .string()
-   .optional,
+    .string()
+    .optional()
+    .refine((val) => !val || val.startsWith('data:image/'), {
+      message: "Cover image must be a valid base64 image string",
+    }),
+  inlineImages: z
+    .array(z.object({
+    id: z.string(),
+    data: z.string()
+  }))
+  .optional()
 });
 
 // Schema for creating a new post

@@ -9,28 +9,33 @@ import SignupPage from './pages/signupPage';
 import SigninPage from './pages/signinPage';
 import PostCreate from './components/Post/postCreate';
 import { Route, Routes } from 'react-router-dom';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 const App: React.FC = () => {
   return (
     <Routes>
       {/* Protected pages */}
 
-    <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<HomePage />} />
-    
-      <Route path="/create" element={<PostCreate />} />
-
-      {/* Non-Proected Pages */}
-      {/* <Route path="/" element={<LandingPage />} /> */}
+      <Route path="/" element={<LandingPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/signin" element={<SigninPage />} />
+
+      <Route path="/home" element={
+        <ProtectedRoute>
+          <HomePage />
+        </ProtectedRoute>
+      } />
+      <Route path="/create" element={
+        <ProtectedRoute>
+          <PostCreate />
+        </ProtectedRoute>
+      } />
+
+      {/* Fallback route */}
+      <Route path="*" element={<LandingPage />} />
     </Routes>
   )
 }
 
 export default App;
 
-
-{/* <Route path="/" element={<AppContainer />}>
-        <Route index element={<HomePage />} />
-      </Route> */}
