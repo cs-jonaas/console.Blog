@@ -1,11 +1,25 @@
 import type { JwtPayload } from "jwt-decode";
+import { decodeJwtPayload } from "../services/authServices";
 
 
 export const isAuthenticated = (): boolean => {
   const token = localStorage.getItem('token');
-  const cookieAuth = localStorage.getItem('auth') === 'cookie';
-  return !!token || cookieAuth;
+  if (!token) return false;
+  
+  // Optional: Add token expiration check
+  try {
+    const payload = decodeJwtPayload(token);
+    if (payload && payload.exp) {
+      return Date.now() < payload.exp * 1000;
+    }
+    return true;
+  } catch {
+    return false;
+  }
 };
+//   const cookieAuth = localStorage.getItem('auth') === 'cookie';
+//   return !!token || cookieAuth;
+// };
 
 // Helper function to get user data from localStorage
 export const getStoredUser = () => {
@@ -51,15 +65,15 @@ export const login = (token?: string, user?: Record<string, unknown>) => {
   if (user) {
     localStorage.setItem('user', JSON.stringify(user));
 
-    if(user.id) {
-      localStorage.setItem("userId", user._id as string);
-    }
-    if (user.username) {
-      localStorage.setItem("username", user.username as string);
-    }
-    if (user.email) {
-      localStorage.setItem("email", user.email as string);
-    }
+    // if(user.id) {
+    //   localStorage.setItem("userId", user._id as string);
+    // }
+    // if (user.username) {
+    //   localStorage.setItem("username", user.username as string);
+    // }
+    // if (user.email) {
+    //   localStorage.setItem("email", user.email as string);
+    // }
   }
   window.dispatchEvent(new CustomEvent('authStateChange'));
 };

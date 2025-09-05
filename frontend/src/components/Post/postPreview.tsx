@@ -1,19 +1,23 @@
-import { Box, Typography, Chip } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm'; // For tables, strikethrough.
 
 interface PostPreviewProps {
   title: string;
   tags: string[];
   content: string;
+  contentHtml?: string;
   coverImage?: string;
 }
 
 const PostPreview: React.FC<PostPreviewProps> = ({ title, tags, content, coverImage }) => {
+  const cleanContent = content.replace(/\\([\\`*_[\]{}()#+\-.!])/g, '$1');
+
   return (
-    <Box>
+    <Box sx={{ maxWidth: "100%", overflow: "hidden" }}>
       {/* Cover image */}
       {coverImage && (
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 3 }}>
           <img
             src={coverImage}
             alt="cover"
@@ -28,25 +32,55 @@ const PostPreview: React.FC<PostPreviewProps> = ({ title, tags, content, coverIm
       )}
 
       {/* Title */}
-      <Typography variant="h3" component="h1" gutterBottom>
+      <Typography 
+        variant="h1" 
+        component="h1" 
+        sx={{ 
+          fontSize: { xs: '2rem', md: '2.5rem' },
+          fontWeight: 700,
+          mb: 2,
+          lineHeight: 1.2
+        }}
+        gutterBottom
+      >
         {title || "Untitled Post"}
       </Typography>
 
       {/* Tags */}
-      <Box sx={{ display: "flex", gap: 1, mb: 3 }}>
-        {tags.map((tag, i) => (
-          <Chip key={i} label={`#${tag}`} variant="outlined" />
-        ))}
-      </Box>
-
-      {/* Content */}
-      <Box className="prose max-w-none">
-        <ReactMarkdown>
-          {content || "_Nothing to preview yet..._"}
-        </ReactMarkdown>
-      </Box>
+      {tags.length > 0 && (
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
+          {tags.map((tag, index) => (
+            <Typography 
+                key={index} 
+                variant="caption" 
+                sx={{ 
+                  bgcolor: 'primary.light', 
+                  color: 'primary.contrastText', 
+                  px: 1, 
+                  py: 0.5, 
+                  borderRadius: 1, 
+                  mr: 1 
+                }}
+              >
+                #{tag}
+              </Typography>
+          ))}
+        </Box>
+      )}
+          <Box className="markdown-body" sx={{ 
+            mt: 3,
+            '& > *:first-of-type': {
+              mt: 0
+            }
+          }}>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {cleanContent || "_Nothing to preview yet..._"}
+            </ReactMarkdown>
+          </Box>
+      {/* )} */}
     </Box>
   );
 };
 
 export default PostPreview;
+

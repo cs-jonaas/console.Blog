@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useRef } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
   Button,
@@ -8,6 +10,8 @@ import {
   Alert,
   Snackbar,
   IconButton,
+  Typography,
+  Chip,
 } from '@mui/material';
 import {
   MDXEditor,
@@ -31,12 +35,11 @@ import {
   imagePlugin,
   InsertImage,
   linkDialogPlugin,
-  diffSourcePlugin,
   UndoRedo,
-  Separator
+  Separator,
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
-import CloseIcon from '@mui/icons-material/Close';
+
 
 import PostPreview from './postPreview';
 import { useNavigate } from 'react-router-dom';
@@ -49,6 +52,7 @@ const PostCreate = () => {
   const [coverImage, setCoverImage] = useState<string | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
+  const [newTag, setNewTag] = useState('');
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -86,12 +90,25 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
     }
   };
 
-    // Example: simulate tag entry by comma-separated text
-  const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    const parsed = raw.split(",").map(tag => tag.trim()).filter(Boolean);
-    setTags(parsed.slice(0, 4)); // max 4 tags
-  };
+  const handleAddTag = () => {
+  const trimmed = newTag.trim();
+  if (trimmed && !tags.includes(trimmed)) {
+    setTags([...tags, trimmed]);
+    setNewTag('');
+  }
+};
+
+const handleRemoveTag = (tagToRemove: string) => {
+  setTags(tags.filter(tag => tag !== tagToRemove));
+};
+
+const handleTagKeyPress = (e: React.KeyboardEvent) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    handleAddTag();
+  }
+};
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,7 +130,9 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
       console.log('Cover image preview:', coverImage?.substring(0, 50) + '...');
     // Extract inline images (base64) from markdown
     const inlineImages: { id: string; data: string }[] = [];
-    const processedContent = content.replace(
+    
+    // Step 1: Replace inline base64 images with placeholders
+    let processedContent = content.replace(
       /!\[.*?\]\((data:image\/.*?;base64,.*?)\)/g,
       (match, p1, offset) => {
         const id = `image-${offset}`;
@@ -121,6 +140,9 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
         return match.replace(p1, id); // replace base64 with "image-id"
       }
     );
+
+    // Step 2: Unescape Markdown characters
+    processedContent = processedContent.replace(/\\([\\`*_[\]{}()#+\-.!])/g, '$1');
 
      // Prepare payload - ensure coverImage is properly formatted
     const payload = {
@@ -131,7 +153,8 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
       inlineImages
     };
 
-    console.log('Full payload:', JSON.stringify(payload).substring(0, 200) + '...');
+    console.log("Processed content:", processedContent);
+    console.log("Sending content:", content);
 
     // Call backend API
     const API_URL = import.meta.env.VITE_API_URL;
@@ -168,14 +191,6 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
       setIsSubmitting(false);
     }
   };
-
-  // In your handleSubmit function
-  console.log('Cover image length:', coverImage?.length);
-  console.log('Cover image type:', coverImage?.substring(0, 20));
-
-  // const handleCloseSnackbar = () => {
-  //   setSnackbar({ ...snackbar, open: false });
-  // };
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -266,6 +281,7 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
             title={title}
             tags={tags}
             content={content}
+            contentHtml={undefined} // You can implement HTML conversion if needed
             coverImage={coverImage}
           />
         ) : (
@@ -283,16 +299,41 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
             />
 
             {/* Tags input */}
-            <TextField
-              placeholder="Add up to 4 tags (comma separated)..."
-              variant="standard"
-              onChange={handleTagChange}
-              InputProps={{
-                disableUnderline: true,
-                sx: { fontSize: "1rem", color: "text.secondary" }
-              }}
-              sx={{ mb: 2 }}
-            />
+            <Box sx={{ mt: 2, mb: 2 }}>
+  <Typography variant="h6" gutterBottom>
+    Tags
+  </Typography>
+  <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+    {tags.map((tag, index) => (
+      <Chip
+        key={index}
+        label={`#${tag}`}
+        onDelete={() => handleRemoveTag(tag)}
+        color="primary"
+        variant="outlined"
+      />
+    ))}
+  </Box>
+  <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+    <TextField
+      label="Add tag"
+      value={newTag}
+      onChange={(e) => setNewTag(e.target.value)}
+      onKeyPress={handleTagKeyPress}
+      size="small"
+      variant="outlined"
+      helperText="Press Enter or click + to add tag"
+    />
+    <IconButton 
+      onClick={handleAddTag} 
+      color="primary"
+      disabled={!newTag.trim()}
+    >
+      <AddIcon />
+    </IconButton>
+  </Box>
+</Box>
+
 
             {/* Content Editor */}
             <Box
@@ -364,7 +405,7 @@ const coverInputRef = useRef<HTMLInputElement | null>(null);
                       </>
                     )
                   }),
-                  diffSourcePlugin({ viewMode: "rich-text", diffMarkdown: "" })
+                  // diffSourcePlugin({ viewMode: "markdown", diffMarkdown: "" })
                 ]}
                 contentEditableClassName="prose max-w-none"
               />

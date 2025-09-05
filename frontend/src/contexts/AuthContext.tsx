@@ -54,16 +54,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
       setIsLoading(false);
     };
-    // setIsLoggedIn(authStatus);
-    //   if (authStatus && storedUser) {
-    //     setUser(storedUser);
-    //   }
-    //   setIsLoading(false); // Signal that the initial check is done
-    // };
 
     checkAuthStatus();
 
-    // Optional: Listen for your custom event if login/logout happens in another tab/window
+    // Listen for your custom event if login/logout happens in another tab/window
     const handleStorageChange = () => checkAuthStatus();
     window.addEventListener('authStateChange', handleStorageChange);
     return () => window.removeEventListener('authStateChange', handleStorageChange);

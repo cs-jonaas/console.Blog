@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { isAuthenticated, logout } from "../../utils/auth";
 import { decodeJwtPayload } from "../../services/authServices";
+import bloglogo from "../../assets/bloglogo.png";
 
 
 const Header = () => {
@@ -62,11 +63,16 @@ const Header = () => {
       sx={{ borderBottom: "1px solid #ddd" }}
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Link href="/" underline="none" style={{ textDecoration: "none" }}>
+        <img
+          src={bloglogo}
+          alt="Blog Logo"
+          style={{ width: "120px", height: "auto" }}
+        />
+        {/* <Link href="/" underline="none" style={{ textDecoration: "none" }}>
           <Typography variant="h6" fontWeight="bold">
             console.Blog
           </Typography>
-        </Link>
+        </Link> */}
 
         <Stack direction="row" spacing={3} alignItems="center">
           {isLoggedIn ? (
@@ -81,7 +87,7 @@ const Header = () => {
             </>
           ) : (
             <>
-          <Typography variant="body2">Our story</Typography>
+          {/* <Typography variant="body2">Our story</Typography> */}
           <Link href="/signin" underline="none" style={{ textDecoration: "none" }}>
             <Typography variant="body2">Sign in</Typography>
           </Link>

@@ -9,6 +9,7 @@ import errorHandler from './middleware/errorHandler';
 import { OK } from './constants/http';
 import authRoutes from './routes/authRoute';
 import postRoutes from './routes/postRoute';
+import saveRoutes from './routes/saveRoute';
 import requireAuth, { AuthenticatedRequest } from './middleware/requireAuth';
 import UserModel from './models/userModel';
 
@@ -80,6 +81,7 @@ app.get('/',
 
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
+app.use("/api", saveRoutes);
 
 app.use(errorHandler);
 

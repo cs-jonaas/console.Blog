@@ -3,6 +3,7 @@ import PostMeta from "./postMeta";
 import { useAuth } from "../../hooks/useAuth";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useNavigate } from "react-router-dom";
 
 interface Author {
   _id: string;
@@ -15,6 +16,7 @@ export interface Post {
   user: string;
   title: string;
   content: string;
+  contentHtml: string;
   author: Author;
   tags: string[];
   createdAt: string;
@@ -35,11 +37,14 @@ interface PostCardProps {
   onSave: (postId: string) => void;
   onShare: (postId: string) => void;
   onComment: (postId: string) => void;
+  isLiking?: boolean;
 }
 
+const MAX_PREVIEW_LINES = 5;
 
 const PostCard = ({ post, onEdit, onDelete, onLike, onSave, onShare, onComment }: PostCardProps) => {
   // Get the current user from your authentication context
+   const navigate = useNavigate();
    const { user, isLoading } = useAuth();
   
   if (isLoading) {
@@ -82,11 +87,48 @@ const PostCard = ({ post, onEdit, onDelete, onLike, onSave, onShare, onComment }
     : username.charAt(0).toUpperCase();
 
 
+  const createPreview = (content: string) => {
+    const lines = content.split('\n');
+    if (lines.length <= MAX_PREVIEW_LINES) {
+      return content;
+    }
+    return lines.slice(0, MAX_PREVIEW_LINES).join('\n') + '...';
+  };
+
+  const contentPreview = createPreview(post.content);
   // Check if the current user is the author of this post
   const isAuthor = user?._id === authorId;
 
+  //Click into card to read full post
+  const handleCardClick = () => {
+    navigate(`/post/${post._id}`);
+  };
+
+  // Handle action button clicks
+  const handleActionClick = (e: React.MouseEvent, callback: (postId: string) => void) => {
+    e.stopPropagation();
+    callback(post._id);
+  };
+
+  const handleLikeToggle = async (e: React.MouseEvent, postId: string) => {
+    e.stopPropagation();
+    onLike(postId);
+  };
+
   return (
-    <Card sx={{ mb: 3, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+    <Card sx={{ 
+      mb: 3, 
+      borderRadius: 2, 
+      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+      cursor: 'pointer',
+        transition: 'transform 0.2s, box-shadow 0.2s',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 6px 16px rgba(0,0,0,0.1)'
+        }
+      }}
+      onClick={handleCardClick}
+    >
       <CardHeader
         avatar={
           <Avatar>
@@ -116,17 +158,35 @@ const PostCard = ({ post, onEdit, onDelete, onLike, onSave, onShare, onComment }
         )}
 
       <CardContent>
-        <Typography variant="h5" component="h2" gutterBottom>
+        <Typography variant="h5" component="h2" gutterBottom sx={{ color: 'primary.main' }}>
           {post.title}
         </Typography>
-        <Box sx={{ color: "text.secondary", typography: "body1" }}>
+
+        <Box 
+          sx={{ 
+            color: "text.secondary", 
+            typography: "body1",
+            cursor: 'pointer',
+            maxHeight: 120,
+            overflow: 'hidden',
+            position: 'relative',
+            '&:after': {
+              content: '""',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '2em',
+              background: 'linear-gradient(transparent, white)',
+              pointerEvents: 'none',
+            }          
+          }}
+        >
+          
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {post.content}
+            {contentPreview}
           </ReactMarkdown>
         </Box>
-        {/* <Typography variant="body1" color="text.secondary">
-          {post.content}
-        </Typography> */}
        {/* Display tags if they exist */}
         {post.tags && post.tags.length > 0 && (
           <Box sx={{ mt: 1 }}>
@@ -146,32 +206,39 @@ const PostCard = ({ post, onEdit, onDelete, onLike, onSave, onShare, onComment }
                 #{tag}
               </Typography>
             ))}
+            {post.tags.length > 3 && (
+              <Typography variant="caption" color="text.secondary">
+                +{post.tags.length - 3} more
+              </Typography>
+            )}
           </Box>
         )}
       </CardContent>
-      <CardActions>
+
+      <CardActions sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {/* PostMeta for interactions (likes, comments, etc.) */}
         <PostMeta 
             post={post}
-            onLike={onLike}
-            onSave={onSave}
-            onShare={onShare}
-            onComment={onComment}
+            onLike={handleLikeToggle}
+            onSave={(e, postId) => { e.stopPropagation(); onSave(postId); }}
+            onShare={(e, postId) => { e.stopPropagation(); onShare(postId); }}
+            onComment={(e, postId) => { e.stopPropagation(); onComment(postId); }}
         />
         {/* Conditionally Render Edit/Delete Buttons for the author */}
         {isAuthor && (
           <Box sx={{ mr: 2 }}>
             <Button 
               size="small" 
-              onClick={() => onEdit(post._id)}
+              variant="outlined"
+              onClick={(e) => handleActionClick(e, onEdit)}
               sx={{ mr: 1 }}
             >
               Edit
             </Button>
             <Button 
-              size="small" 
-              color="error" 
-              onClick={() => onDelete(post._id)}
+              size="small"
+              variant="outlined"
+              onClick={(e) => handleActionClick(e, onDelete)}
             >
               Delete
             </Button>

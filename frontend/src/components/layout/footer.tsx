@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 
 const Footer = () => {
-  const links = ["Help", "About", "Careers", "Press", "Blog", "Privacy", "Rules", "Terms", "Contatc Us"];
+  const links = ["Help", "About", "Careers", "Press", "Blog", "Privacy", "Rules", "Terms", "Contact Us"];
 
   return (
     <Box
