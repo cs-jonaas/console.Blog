@@ -273,13 +273,6 @@ const handleComment = async (e: React.MouseEvent, postId: string) => {
           {post.title}
         </Typography>
 
-        <Box sx={{ mb: 3 }}>
-          <div 
-            className="markdown-body" 
-            dangerouslySetInnerHTML={{ __html: post.contentHtml }} 
-          />
-        </Box>
-
         {post.tags && post.tags.length > 0 && (
           <Box sx={{ mb: 3 }}>
             {post.tags.map((tag, index) => (
@@ -300,6 +293,15 @@ const handleComment = async (e: React.MouseEvent, postId: string) => {
             ))}
           </Box>
         )}
+        
+        <Box sx={{ mb: 3 }}>
+          <div 
+            className="markdown-body" 
+            dangerouslySetInnerHTML={{ __html: post.contentHtml }} 
+          />
+        </Box>
+
+        
 
         <PostMeta 
           post={post}
