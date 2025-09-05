@@ -110,7 +110,8 @@ const Signin: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        flex: 1,
+        height: "100%",
         backgroundImage: `url('/background.svg')`, // Set your background image path here
         backgroundSize: 'cover',
         backgroundPosition: 'center',
