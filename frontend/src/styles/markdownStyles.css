@@ -1,0 +1,177 @@
+/* Markdown Body Styles */
+.markdown-body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #2D3748;
+  max-width: 100%;
+}
+
+/* Headings */
+.markdown-body h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 2.5rem 0 1rem 0;
+  line-height: 1.3;
+  color: #1A202C;
+  border-bottom: 2px solid #E2E8F0;
+  padding-bottom: 0.5rem;
+}
+
+.markdown-body h2 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  margin: 2rem 0 0.875rem 0;
+  color: #2D3748;
+  line-height: 1.4;
+}
+
+.markdown-body h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1.75rem 0 0.75rem 0;
+  color: #2D3748;
+}
+
+.markdown-body h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.625rem 0;
+  color: #2D3748;
+}
+
+/* Paragraphs */
+.markdown-body p {
+  margin: 1.25rem 0;
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+
+/* Lists */
+.markdown-body ul, .markdown-body ol {
+  margin: 1.25rem 0;
+  padding-left: 2rem;
+}
+
+.markdown-body li {
+  margin: 0.5rem 0;
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.markdown-body li > p {
+  margin: 0.5rem 0;
+}
+
+/* Blockquotes */
+.markdown-body blockquote {
+  background: #F7FAFC;
+  border-left: 4px solid #E2E8F0;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  font-style: italic;
+  border-radius: 0 8px 8px 0;
+}
+
+.markdown-body blockquote p {
+  margin: 0;
+  color: #4A5568;
+}
+
+/* Code */
+.markdown-body code {
+  background: #EDF2F7;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+  font-size: 0.9em;
+  color: #E53E3E;
+}
+
+.markdown-body pre {
+  background: #1A202C;
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow: auto;
+  margin: 1.5rem 0;
+}
+
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+  color: #CBD5E0;
+  font-size: 0.95em;
+}
+
+/* Tables */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95em;
+}
+
+.markdown-body table th {
+  background: #F7FAFC;
+  font-weight: 600;
+  text-align: left;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #E2E8F0;
+}
+
+.markdown-body table tr:nth-child(even) {
+  background: #F7FAFC;
+}
+
+/* Links */
+.markdown-body a {
+  color: #3182CE;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.markdown-body a:hover {
+  color: #2C5282;
+  text-decoration: underline;
+}
+
+/* Images */
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Horizontal Rules */
+.markdown-body hr {
+  border: none;
+  height: 2px;
+  background: #E2E8F0;
+  margin: 2.5rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .markdown-body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  .markdown-body h1 {
+    font-size: 2rem;
+  }
+  
+  .markdown-body h2 {
+    font-size: 1.75rem;
+  }
+  
+  .markdown-body p {
+    font-size: 1rem;
+  }
+}

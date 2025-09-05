@@ -11,13 +11,12 @@ const Hero = () => {
         height: "100%",
         backgroundColor: "#fff",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         px: { xs: 2, md: 10 },
-        py: 6,
       }}
     >
-      
-      <Stack spacing={3} maxWidth="600px">
+
+      <Stack spacing={3} sx={{ maxWidth: "600px" }}>
         <Typography variant="h2" fontWeight="bold" color="primary">
           console.BLOG
         </Typography>
@@ -27,12 +26,12 @@ const Hero = () => {
         {/* <CustomButton>Start reading</CustomButton> */}
       </Stack>
 
-      
-      <Box sx={{ display: { xs: "none", md: "block" }, maxWidth: "400px" }}>
+
+      <Box sx={{ display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
         <img
           src={HeroImage}
-          alt="illustration"
-          style={{ width: "100%", height: "auto" }}
+          alt="Blog Image"
+          style={{ width: "100%", height: "auto", objectFit: "contain" }}
         />
       </Box>
     </Box>
