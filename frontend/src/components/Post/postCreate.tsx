@@ -405,7 +405,6 @@ const handleTagKeyPress = (e: React.KeyboardEvent) => {
                       </>
                     )
                   }),
-                  // diffSourcePlugin({ viewMode: "markdown", diffMarkdown: "" })
                 ]}
                 contentEditableClassName="prose max-w-none"
               />

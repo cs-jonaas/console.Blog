@@ -6,6 +6,7 @@ import {
   TextField,
   Typography,
   Paper,
+  Link,
 } from '@mui/material';
 import { signupUser } from '../../services/authServices';
 import { useNavigate } from 'react-router-dom';
@@ -162,6 +163,9 @@ const Signup: React.FC = () => {
               disabled={!formData.email || formData.password.length < 8 || loading}>
               Sign Up
             </Button>
+            <Typography align="center" padding={3} > Already have an account? <Link href="/signin"> 
+                Sign in
+              </Link></Typography>
           </form>
         </Paper>
       </Container>

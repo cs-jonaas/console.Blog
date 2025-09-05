@@ -278,9 +278,6 @@ const handleComment = async (e: React.MouseEvent, postId: string) => {
             className="markdown-body" 
             dangerouslySetInnerHTML={{ __html: post.contentHtml }} 
           />
-          {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {post.content}
-          </ReactMarkdown> */}
         </Box>
 
         {post.tags && post.tags.length > 0 && (
