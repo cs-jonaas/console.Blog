@@ -4,9 +4,6 @@
 
 A personal blog post to pen down my own thoughts, and also a portfolio to showcase future collaborations and opportunities for my work.
 
-## 🚀 Demo
-
-[Click here to view the application!]()
 
 ## 📸 Screenshots
 
