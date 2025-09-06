@@ -10,7 +10,7 @@ A personal blog post to pen down my own thoughts, and also a portfolio to showca
 
 ## 📸 Screenshots
 
-![App Screenshot](./images/landingpage.png)
+![Blog landing page](./images/landingpage.png)
 ![App Screenshot](./images/signin.png)
 ![App Screenshot](./images/signup.png)
 ![App Screenshot](./images/homepage.png)
