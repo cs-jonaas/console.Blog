@@ -11,13 +11,12 @@ A personal blog post to pen down my own thoughts, and also a portfolio to showca
 ## 📸 Screenshots
 
 ![Blog landing page](./images/landingpage.png)
-![App Screenshot](./images/signin.png)
-![App Screenshot](./images/signup.png)
-![App Screenshot](./images/homepage.png)
-![App Screenshot](./images/createedit.png)
-![App Screenshot](./images/createpreview.png)
-![App Screenshot](./images/createpost.png)
-![App Screenshot](./images/savedpost.png)
+![Sign In Page](./images/signin.png)
+![Sign Up Page](./images/signup.png)
+![Home Page Feed](./images/homepage.png)
+![Creating a Post](./images/createedit.png)
+![Previewing a post before publishing](./images/createpreview.png)
+![Saved Post Page](./images/savedpost.png)
 
 ## ✨ Features
 
