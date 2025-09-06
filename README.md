@@ -20,10 +20,9 @@ A personal blog post to pen down my own thoughts, and also a portfolio to showca
 
 ## ✨ Features
 
--   **Feature 1:** Describe a key feature.
--   **Feature 2:** Describe another key feature.
+-   **Feature 1:** MDX Editor with amrkdown parser. Converts raw markdown to HTML text.
+-   **Feature 2:** Saving a post and directs user to saved post page
 -   **User Authentication:** Secure login and logout.
--   **Fully Responsive:** Works on all device sizes.
 
 ## 🛠️ Built With
 
@@ -31,8 +30,6 @@ A personal blog post to pen down my own thoughts, and also a portfolio to showca
 -   **Backend:** Node.js, Express.js
 -   **Database:** MongoDB
 -   **Authentication:** JWT, bcrypt
-
-## 💻 Local Development
 
 
 ## 🚧 Future Enhancements
