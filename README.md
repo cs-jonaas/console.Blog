@@ -2,7 +2,7 @@
 
 ![Tech Badges](https://img.shields.io/badge/Technology-Badge1-blue) ![Tech Badges](https://img.shields.io/badge/Technology-Badge2-green)
 
-A personal blog post to pen down my own thoughts, and also a portfolio to showcase future collaborations and opportunities for my work.
+A personal blog post to pen down my own thoughts, and also a portfolio to showcase my work for future collaborations and opportunities.
 
 
 ## 📸 Screenshots
